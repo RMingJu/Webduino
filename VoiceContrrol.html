@@ -1,0 +1,79 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Webduino</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+    <script src="https://blockly.webduino.io/webduino-blockly.js"></script>
+</head>
+
+<style>
+    img {
+        display: none;
+    }
+
+    .show {
+        display: block;
+    }
+</style>
+
+<script>
+    $(function () {
+        var sound,
+            led,
+            $show = $('#show'),
+            $on = $('#on'),
+            $off = $('#off');
+
+        var a = 0; //設一個變數，判斷是不是在一秒內偵測的訊號
+
+        boardReady({ device: '10d54r5Q' ,multi: true }, function (board) {
+            board.systemReset();
+            board.samplingInterval = 250;
+            sound = getSound(board, 2);
+            led = getLed(board, 5);
+            $show.text('偵測中...');
+            sound.on("detected", function () {
+                a = a + 1;
+                if (a === 1) {
+                    light_On();
+                    setTimeout(function () {
+                        a = 0;
+                        light_Off();
+                    }, 1000);
+                }
+            });
+            sound.on("ended", function () {
+                if (a === 0) {
+                    light_Off();
+                }
+            });
+
+            function light_On() {
+                $show.text('你是在大聲什麼啦！');
+                led.on();
+                $on.addClass('show');
+                $off.removeClass('show');
+            }
+
+            function light_Off() {
+                $show.text('偵測中...');
+                led.off();
+                $on.removeClass('show');
+                $off.addClass('show');
+            }
+        });
+
+    });
+
+</script>
+
+<body>
+    <h2 id="show">準備中</h2>
+    <img src="http://example.oxxostudio.tw/it2016/it2016-day05-on.jpg" id="on">
+    <img src="http://example.oxxostudio.tw/it2016/it2016-day05-off.jpg" class="show" id="off">
+</body>
+
+</html>

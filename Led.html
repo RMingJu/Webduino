@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Webduino Blockly Demo 02</title>
+  <script src="https://blockly.webduino.io/lib/jquery-1.9.1.min.js"></script>
+  <script src="https://blockly.webduino.io/components/webduino-js/dist/webduino-all.min.js"></script>
+  <script src="https://blockly.webduino.io/lib/webduino-blockly.js"></script>
+  <script src="https://blockly.webduino.io/lib/firebase.js"></script>
+  <script src="https://blockly.webduino.io/lib/runtime.min.js"></script>
+</head>
+
+<style>
+  #demo-area-02-light img {
+    height: 200px;
+    display: none;
+    pointer-events: auto !important;
+  }
+
+  #demo-area-02-light.on #demo-area-02-on {
+    display: inline-block;
+    pointer-events: auto !important;
+  }
+
+  #demo-area-02-light.off #demo-area-02-off {
+    display: inline-block;
+    pointer-events: auto !important;
+  }
+</style>
+
+<script>
+  var led;
+  boardReady({ device: '10d54r5Q' ,multi: true }, function (board) {
+    board.systemReset();
+    board.samplingInterval = 250;
+
+
+    led = getLed(board, 5); //電壓輸出為 pin 5
+    led.off();  //預設為off
+
+    
+    $("#demo-area-02-light").click(function(){
+      
+      //===============圖片切換===============//
+      //狀態
+      let status = $(this).attr("class");
+      if(status == "on"){
+        $(this).attr("class","off")
+      }else{
+        $(this).attr("class","on")
+      }
+      //===============圖片切換===============//
+
+      //電壓切換  
+      led.toggle();
+    });
+  });
+
+</script>
+
+
+<body>
+  <div>
+    <div id="demo-area-02-light" class="off">
+      <img src="https://blockly.webduino.io/media/off.jpg" id="demo-area-02-off">
+      <img src="https://blockly.webduino.io/media/on.jpg" id="demo-area-02-on">
+    </div>
+  </div>
+</body>
